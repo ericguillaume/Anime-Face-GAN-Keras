@@ -1,0 +1,26 @@
+# clone github
+cd /home/eric/
+rm -rf Anime-Face-GAN-Keras
+git clone https://github.com/ericguillaume/Anime-Face-GAN-Keras.git
+cd Anime-Face-GAN-Keras
+git checkout master   #DEBUG !!!!!! etait debug_remote
+
+# load data
+rm -rf /home/eric/dev/data/AnimeFaceGAN
+mkdir -p /home/eric/dev/data
+cd /home/eric/dev/data
+tar -xzvf /tmp/AnimeFaceGAN.tar.gz
+
+# install requirements
+cd /home/eric/Anime-Face-GAN-Keras
+source bin/activate
+pip3 install -r requirements.txt
+pip3 install git+https://www.github.com/keras-team/keras-contrib.git
+
+# execute
+export ANIME_FACE_GAN_DATA_DIR="/home/eric/dev/data/AnimeFaceGAN"
+echo $ANIME_FACE_GAN_DATA_DIR
+python3 -c "import os; print(os.environ[\"ANIME_FACE_GAN_DATA_DIR\"])"
+cd /home/eric/Anime-Face-GAN-Keras
+python3 GAN_Trainingv3.py
+#python3 debug_remote.py
