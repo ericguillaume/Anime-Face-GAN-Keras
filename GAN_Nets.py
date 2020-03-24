@@ -27,7 +27,7 @@ from keras.optimizers import SGD, Adam, RMSprop
 from keras.layers.advanced_activations import LeakyReLU
 import matplotlib.pyplot as plt
 from misc_layers import MinibatchDiscrimination, SubPixelUpscaling, CustomLRELU, bilinear2x
-from keras_contrib.layers.convolutional import SubPixelUpscaling
+from keras_contrib.layers.convolutional.subpixelupscaling import SubPixelUpscaling
 from keras.datasets import mnist
 import keras.backend as K
 from keras.initializers import RandomNormal
