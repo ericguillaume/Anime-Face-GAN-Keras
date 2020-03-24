@@ -4,6 +4,10 @@ Created on Sun Jun 18 12:22:57 2017
 
 @author: Pavitrakumar
 """
+import glob
+
+from config import DATA_DIR, RAW_CURLED_IMAGES_DIR, RAW_CURLED_IMAGES_GLOB
+
 
 """
 This file is explains how data is colleted and used to training GAN
@@ -24,9 +28,7 @@ import os
 from PIL import Image
 from tqdm import tqdm
 
-data_dir = "E:\\GAN_Datasets\\curl\\anime_planet\\"
-faceCascade = cv2.CascadeClassifier('E:\\Software\\WinPython-64bit-3.5.3.1Qt5\\python-3.5.3.amd64\\Lib\\site-packages\\opencv_python-3.2.0+contrib.dist-info\\lbpcascade_animeface.xml')
-output_dir = "E:\\GAN_Datasets\\curl\\ANIME_PLANET_FACES_COLOUR_ONLY_64\\"
+faceCascade = cv2.CascadeClassifier("/Users/eric/dev/tutorials/Anime-Face-GAN-Keras/lbpcascade_animeface.xml")
 file_name = "mk"
 crop_size = (64,64)
 only_color = True
@@ -35,8 +37,12 @@ def biggest_rectangle(r):
     #return w*h
     return r[2]*r[3]
 
-for count,filename in enumerate(tqdm(os.listdir(data_dir))):
-    image = cv2.imread(data_dir+filename)
+images_filenames = list(glob.glob(RAW_CURLED_IMAGES_GLOB))
+if not images_filenames:
+    raise ValueError("{} contains no images".format(RAW_CURLED_IMAGES_GLOB))
+print("len(images_filenames) = {}".format(len(images_filenames)))
+for count, filename in enumerate(tqdm(images_filenames)):
+    image = cv2.imread(filename)
     if image is not None:
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) 
         gray = cv2.equalizeHist(gray)
@@ -58,7 +64,9 @@ for count,filename in enumerate(tqdm(os.listdir(data_dir))):
         #cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 2)
         cropped_image = image[y:y + h, x:x + w,:]
         resized_image = cv2.resize(cropped_image, crop_size)
-        cv2.imwrite(output_dir+str(count)+file_name+".png", resized_image)
+
+        output_file = DATA_DIR+"/"+str(count)+file_name+".png"
+        cv2.imwrite(output_file, resized_image)
 
 
 """

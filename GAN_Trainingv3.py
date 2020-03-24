@@ -7,6 +7,11 @@ Created on Sat Jul 15 16:23:18 2017
 
 import os
 import glob
+from pathlib import Path
+
+from config import DATA_GLOB, GENERATED_IMAGES_DIR
+
+
 os.environ["KERAS_BACKEND"] = "tensorflow"
 import numpy as np
 from sklearn.utils import shuffle
@@ -39,6 +44,8 @@ from collections import deque
 
 np.random.seed(1337)
 
+Path(GENERATED_IMAGES_DIR).mkdir(parents=True, exist_ok=True)
+
 def norm_img(img):
     img = (img / 127.5) - 1
     return img
@@ -52,6 +59,8 @@ def sample_from_dataset(batch_size, image_shape, data_dir=None, data = None):
     sample_dim = (batch_size,) + image_shape
     sample = np.empty(sample_dim, dtype=np.float32)
     all_data_dirlist = list(glob.glob(data_dir))
+    if not all_data_dirlist:
+        raise ValueError("{} contains no data".format(data_dir))
     sample_imgs_paths = np.random.choice(all_data_dirlist,batch_size)
     for index,img_filename in enumerate(sample_imgs_paths):
         image = Image.open(img_filename)
@@ -93,8 +102,8 @@ def generate_images(generator, save_dir):
         fig.axes.get_xaxis().set_visible(False)
         fig.axes.get_yaxis().set_visible(False)
     plt.tight_layout()
-    plt.savefig(save_dir+str(time.time())+"_GENERATEDimage.png",bbox_inches='tight',pad_inches=0)
-    plt.show()
+    plt.savefig(save_dir+"/"+str(time.time())+"_GENERATEDimage.png",bbox_inches='tight',pad_inches=0)
+    # plt.show()
 
 
 def save_img_batch(img_batch,img_save_dir):
@@ -115,7 +124,7 @@ def save_img_batch(img_batch,img_save_dir):
         fig.axes.get_yaxis().set_visible(False)
     plt.tight_layout()
     plt.savefig(img_save_dir,bbox_inches='tight',pad_inches=0)
-    plt.show()   
+    # plt.show()
 
 
 
@@ -124,19 +133,14 @@ num_steps = 10000
 batch_size = 64
 
 image_shape = None
-
-img_save_dir = "E:\\GAN_Datasets\\curl\\NEW_TRAIN\\"
-
 save_model = False
 
 
 
 #image_shape = (96,96,3)
 image_shape = (64,64,3)
-data_dir =  "E:\\GAN_Datasets\\curl\\ANIME_PLANET_FACES_COLOUR_ONLY_64\\*.png"
-#data_dir = "E:\\GAN_Datasets\\curl\\online_ds\\thumb\\*\\*.png"
-log_dir = img_save_dir
-save_model_dir = img_save_dir
+log_dir = GENERATED_IMAGES_DIR
+save_model_dir = GENERATED_IMAGES_DIR
 
 discriminator = get_disc_normal(image_shape)
 generator = get_gen_normal(noise_shape)
@@ -164,7 +168,7 @@ for step in range(num_steps):
     print("Begin step: ", tot_step)
     step_begin_time = time.time() 
     
-    real_data_X = sample_from_dataset(batch_size, image_shape, data_dir = data_dir)
+    real_data_X = sample_from_dataset(batch_size, image_shape, data_dir = DATA_GLOB)
 
     noise = gen_noise(batch_size,noise_shape)
     
@@ -172,7 +176,7 @@ for step in range(num_steps):
     
     if (tot_step % 10) == 0:
         step_num = str(tot_step).zfill(4)
-        save_img_batch(fake_data_X,img_save_dir+step_num+"_image.png")
+        save_img_batch(fake_data_X,GENERATED_IMAGES_DIR+"/"+step_num+"_image.png")
 
         
     data_X = np.concatenate([real_data_X,fake_data_X])
@@ -208,7 +212,7 @@ for step in range(num_steps):
     gan_metrics = gan.train_on_batch(GAN_X,GAN_Y)
     print("GAN loss: %f" % (gan_metrics[0]))
     
-    text_file = open(log_dir+"\\training_log.txt", "a")
+    text_file = open(log_dir+"/training_log.txt", "a")
     text_file.write("Step: %d Disc: real loss: %f fake loss: %f GAN loss: %f\n" % (tot_step, dis_metrics_real[0], dis_metrics_fake[0],gan_metrics[0]))
     text_file.close()
     avg_GAN_loss.append(gan_metrics[0])
@@ -235,7 +239,7 @@ for step in range(num_steps):
 
 #generate final sample images
 for i in range(10):
-    generate_images(generator, img_save_dir)
+    generate_images(generator, GENERATED_IMAGES_DIR)
 
 
 """
@@ -245,12 +249,12 @@ save_img_batch(sample_from_dataset(batch_size, image_shape, data_dir = data_dir)
 
 #Generating GIF from PNG
 images = []
-all_data_dirlist = list(glob.glob(img_save_dir+"*_image.png"))
+all_data_dirlist = list(glob.glob(GENERATED_IMAGES_DIR+"/*_image.png"))
 for filename in all_data_dirlist:
     img_num = filename.split('\\')[-1][0:-10]
     if (int(img_num) % 100) == 0:
         images.append(imageio.imread(filename))
-imageio.mimsave(img_save_dir+'movie.gif', images) 
+imageio.mimsave(GENERATED_IMAGES_DIR+"/movie.gif", images)
     
 """
 Alternate way to convert PNG to GIF (ImageMagick):
