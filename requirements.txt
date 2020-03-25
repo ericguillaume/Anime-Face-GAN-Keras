@@ -3,3 +3,7 @@ keras==2.0.8
 scipy<=1.2.1
 numpy<=1.18.2
 imageio<=2.8.0
+sklearn<=0.17
+opencv-python
+matplotlib
+tqdm
