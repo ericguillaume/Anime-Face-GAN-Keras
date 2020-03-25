@@ -9,6 +9,8 @@ import os
 import glob
 from pathlib import Path
 
+from tqdm import tqdm
+
 from config import DATA_GLOB, GENERATED_IMAGES_DIR
 
 
@@ -163,7 +165,7 @@ avg_GAN_loss = deque([0], maxlen=250)
 
 
 
-for step in range(num_steps): 
+for step in tqdm(range(num_steps)):
     tot_step = step
     print("Begin step: ", tot_step)
     step_begin_time = time.time() 

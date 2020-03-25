@@ -3,7 +3,6 @@ __pycache__/
 .DS_Store
 
 # venv
-!env/bin/activate
 env/
 
 generated/
