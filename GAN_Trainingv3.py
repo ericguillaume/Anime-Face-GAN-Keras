@@ -167,7 +167,7 @@ avg_GAN_loss = deque([0], maxlen=250)
 
 for step in tqdm(range(num_steps)):
     tot_step = step
-    print("Begin step: ", tot_step)
+    #print("Begin step: ", tot_step)
     step_begin_time = time.time() 
     
     real_data_X = sample_from_dataset(batch_size, image_shape, data_dir = DATA_GLOB)
@@ -197,7 +197,7 @@ for step in tqdm(range(num_steps)):
     dis_metrics_real = discriminator.train_on_batch(real_data_X,real_data_Y)   #training seperately on real
     dis_metrics_fake = discriminator.train_on_batch(fake_data_X,fake_data_Y)   #training seperately on fake
     
-    print("Disc: real loss: %f fake loss: %f" % (dis_metrics_real[0], dis_metrics_fake[0]))
+    #print("Disc: real loss: %f fake loss: %f" % (dis_metrics_real[0], dis_metrics_fake[0]))
     
     
     avg_disc_fake_loss.append(dis_metrics_fake[0])
@@ -212,7 +212,7 @@ for step in tqdm(range(num_steps)):
     discriminator.trainable = False
     
     gan_metrics = gan.train_on_batch(GAN_X,GAN_Y)
-    print("GAN loss: %f" % (gan_metrics[0]))
+    #print("GAN loss: %f" % (gan_metrics[0]))
     
     text_file = open(log_dir+"/training_log.txt", "a")
     text_file.write("Step: %d Disc: real loss: %f fake loss: %f GAN loss: %f\n" % (tot_step, dis_metrics_real[0], dis_metrics_fake[0],gan_metrics[0]))
@@ -222,7 +222,7 @@ for step in tqdm(range(num_steps)):
         
     end_time = time.time()
     diff_time = int(end_time - step_begin_time)
-    print("Step %d completed. Time took: %s secs." % (tot_step, diff_time))
+    #print("Step %d completed. Time took: %s secs." % (tot_step, diff_time))
     
     if ((tot_step+1) % 500) == 0:
         print("-----------------------------------------------------------------")
