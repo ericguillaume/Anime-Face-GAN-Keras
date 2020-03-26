@@ -132,7 +132,7 @@ def save_img_batch(img_batch,img_save_dir):
 
 noise_shape = (1,1,100)
 num_steps = 10000
-batch_size = 64
+batch_size = 128  # 64
 
 image_shape = None
 save_model = False

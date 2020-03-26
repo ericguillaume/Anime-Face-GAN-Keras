@@ -3,13 +3,13 @@ cd /home/eric/
 rm -rf Anime-Face-GAN-Keras
 git clone https://github.com/ericguillaume/Anime-Face-GAN-Keras.git
 cd Anime-Face-GAN-Keras
-git checkout master   #DEBUG !!!!!! etait debug_remote
+git checkout lana   #DEBUG !!!!!! etait debug_remote
 
 # load data
-rm -rf /home/eric/dev/data/AnimeFaceGAN
+rm -rf /home/eric/dev/data/images_lana+rhoades_2.txt_resized
 mkdir -p /home/eric/dev/data
 cd /home/eric/dev/data
-tar -xzvf /tmp/AnimeFaceGAN.tar.gz
+tar -xzvf /tmp/images_lana+rhoades_2.txt_resized.tar.gz
 
 # install requirements
 cd /home/eric/Anime-Face-GAN-Keras
@@ -21,7 +21,7 @@ pip3 install git+https://www.github.com/keras-team/keras-contrib.git
 
 # execute
 source env/bin/activate
-export ANIME_FACE_GAN_DATA_DIR="/home/eric/dev/data/AnimeFaceGAN"
+export LANA_GAN_DATA_DIR="/home/eric/dev/data/images_lana+rhoades_2.txt_resized"
 cd /home/eric/Anime-Face-GAN-Keras
 python3 GAN_Trainingv3.py
 #python3 debug_remote.py
