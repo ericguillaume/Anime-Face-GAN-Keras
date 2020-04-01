@@ -11,7 +11,7 @@ from pathlib import Path
 
 from tqdm import tqdm
 
-from config import DATA_GLOB, GENERATED_IMAGES_DIR
+from config import DATA_GLOB, GENERATED_IMAGES_DIR, NUM_STEPS, BATCH_SIZE
 
 
 os.environ["KERAS_BACKEND"] = "tensorflow"
@@ -131,8 +131,8 @@ def save_img_batch(img_batch,img_save_dir):
 
 
 noise_shape = (1,1,100)
-num_steps = 10000
-batch_size = 64
+num_steps = NUM_STEPS
+batch_size = BATCH_SIZE
 
 image_shape = None
 save_model = False

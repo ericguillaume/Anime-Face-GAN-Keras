@@ -22,6 +22,7 @@ pip3 install git+https://www.github.com/keras-team/keras-contrib.git
 # execute
 source env/bin/activate
 export ANIME_FACE_GAN_DATA_DIR="/home/eric/dev/data/AnimeFaceGAN"
+export ANIME_FACE_GAN_NUM_STEPS=1000
 cd /home/eric/Anime-Face-GAN-Keras
 python3 GAN_Trainingv3.py
 #python3 debug_remote.py

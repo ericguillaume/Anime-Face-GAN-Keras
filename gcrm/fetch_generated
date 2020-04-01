@@ -8,4 +8,4 @@ then
   exit 1
 fi
 
-gcloud compute scp gcrm-machine-${GCRM_MACHINE_NAME}:/home/eric/Anime-Face-GAN-Keras/generated /tmp/generated_anime --recurse
+gcloud compute scp ${GCRM_MACHINE_NAME}:/home/eric/Anime-Face-GAN-Keras/generated /tmp/generated_anime --recurse
