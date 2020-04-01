@@ -44,6 +44,9 @@ np.random.seed(42)
 
 def get_gen_normal(noise_shape):
     noise_shape = noise_shape
+
+    dropout_rate = 0.3
+
     """
     Changing padding = 'same' in the first layer makes a lot fo difference!!!!
     """
@@ -56,6 +59,7 @@ def get_gen_normal(noise_shape):
     generator = Conv2DTranspose(filters = 512, kernel_size = (4,4), strides = (1,1), padding = "valid", data_format = "channels_last", kernel_initializer = kernel_init)(gen_input)
     generator = BatchNormalization(momentum = 0.5)(generator)
     generator = LeakyReLU(0.2)(generator)
+    generator = Dropout(dropout_rate)(generator)
         
     #generator = bilinear2x(generator,256,kernel_size=(4,4))
     #generator = UpSampling2D(size=(2, 2))(generator)
@@ -64,6 +68,7 @@ def get_gen_normal(noise_shape):
     generator = Conv2DTranspose(filters = 256, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(generator)
     generator = BatchNormalization(momentum = 0.5)(generator)
     generator = LeakyReLU(0.2)(generator)
+    generator = Dropout(dropout_rate)(generator)
     
     #generator = bilinear2x(generator,128,kernel_size=(4,4))
     #generator = UpSampling2D(size=(2, 2))(generator)
@@ -72,6 +77,7 @@ def get_gen_normal(noise_shape):
     generator = Conv2DTranspose(filters = 128, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(generator)
     generator = BatchNormalization(momentum = 0.5)(generator)
     generator = LeakyReLU(0.2)(generator)
+    generator = Dropout(dropout_rate)(generator)
     
     #generator = bilinear2x(generator,64,kernel_size=(4,4))
     #generator = UpSampling2D(size=(2, 2))(generator)
@@ -80,10 +86,12 @@ def get_gen_normal(noise_shape):
     generator = Conv2DTranspose(filters = 64, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(generator)
     generator = BatchNormalization(momentum = 0.5)(generator)
     generator = LeakyReLU(0.2)(generator)
+    generator = Dropout(dropout_rate)(generator)
     
     generator = Conv2D(filters = 64, kernel_size = (3,3), strides = (1,1), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(generator)
     generator = BatchNormalization(momentum = 0.5)(generator)
     generator = LeakyReLU(0.2)(generator)
+    generator = Dropout(dropout_rate)(generator)
     
     #generator = bilinear2x(generator,3,kernel_size=(3,3))
     #generator = UpSampling2D(size=(2, 2))(generator)
@@ -103,6 +111,8 @@ def get_gen_normal(noise_shape):
 
 def get_disc_normal(image_shape=(64,64,3)):
     image_shape = image_shape
+
+    dropout_rate = 0.3
     
     dropout_prob = 0.4
     
@@ -113,24 +123,28 @@ def get_disc_normal(image_shape=(64,64,3)):
     
     discriminator = Conv2D(filters = 64, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(dis_input)
     discriminator = LeakyReLU(0.2)(discriminator)
+    discriminator = Dropout(dropout_rate)(discriminator)
     #discriminator = MaxPooling2D(pool_size=(2, 2))(discriminator)
     
     #discriminator = Dropout(dropout_prob)(discriminator)
     discriminator = Conv2D(filters = 128, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(discriminator)
     discriminator = BatchNormalization(momentum = 0.5)(discriminator)
     discriminator = LeakyReLU(0.2)(discriminator)
+    discriminator = Dropout(dropout_rate)(discriminator)
     #discriminator = MaxPooling2D(pool_size=(2, 2))(discriminator)
     
     #discriminator = Dropout(dropout_prob)(discriminator)
     discriminator = Conv2D(filters = 256, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(discriminator)
     discriminator = BatchNormalization(momentum = 0.5)(discriminator)
     discriminator = LeakyReLU(0.2)(discriminator)
+    discriminator = Dropout(dropout_rate)(discriminator)
     #discriminator = MaxPooling2D(pool_size=(2, 2))(discriminator)
     
     #discriminator = Dropout(dropout_prob)(discriminator)
     discriminator = Conv2D(filters = 512, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(discriminator)
     discriminator = BatchNormalization(momentum = 0.5)(discriminator)
     discriminator = LeakyReLU(0.2)(discriminator)
+    discriminator = Dropout(dropout_rate)(discriminator)
     #discriminator = MaxPooling2D(pool_size=(2, 2))(discriminator)
     
     discriminator = Flatten()(discriminator)
