@@ -2,4 +2,10 @@
 
 set -e
 
-gcloud compute scp gcrm-machine-1585167675:/home/eric/Anime-Face-GAN-Keras/generated /tmp/generated_anime --recurse
+if [ -z $GCRM_MACHINE_NAME ]
+then
+  echo "\$GCRM_MACHINE_NAME undefined"
+  exit 1
+fi
+
+gcloud compute scp gcrm-machine-${GCRM_MACHINE_NAME}:/home/eric/Anime-Face-GAN-Keras/generated /tmp/generated_anime --recurse
