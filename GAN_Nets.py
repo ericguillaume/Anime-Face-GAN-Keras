@@ -6,6 +6,10 @@ Created on Sat Jul 15 12:41:47 2017
 """
 
 import os
+
+from keras.regularizers import l2, l1_l2
+
+
 os.environ["KERAS_BACKEND"] = "tensorflow"
 import numpy as np
 from sklearn.utils import shuffle
@@ -43,6 +47,8 @@ np.random.seed(42)
 
 
 def get_gen_normal(noise_shape):
+    reg = l1_l2(l1=0.01, l2=0.01)
+
     noise_shape = noise_shape
     """
     Changing padding = 'same' in the first layer makes a lot fo difference!!!!
@@ -52,8 +58,8 @@ def get_gen_normal(noise_shape):
     
     gen_input = Input(shape = noise_shape) #if want to directly use with conv layer next
     #gen_input = Input(shape = [noise_shape]) #if want to use with dense layer next
-    
-    generator = Conv2DTranspose(filters = 512, kernel_size = (4,4), strides = (1,1), padding = "valid", data_format = "channels_last", kernel_initializer = kernel_init)(gen_input)
+
+    generator = Conv2DTranspose(filters = 512, kernel_size = (4,4), strides = (1,1), padding = "valid", data_format = "channels_last", kernel_initializer = kernel_init, kernel_regularizer=reg, bias_regularizer=reg)(gen_input)
     generator = BatchNormalization(momentum = 0.5)(generator)
     generator = LeakyReLU(0.2)(generator)
         
@@ -61,7 +67,7 @@ def get_gen_normal(noise_shape):
     #generator = UpSampling2D(size=(2, 2))(generator)
     #generator = SubPixelUpscaling(scale_factor=2)(generator)
     #generator = Conv2D(filters = 256, kernel_size = (4,4), strides = (1,1), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(generator)
-    generator = Conv2DTranspose(filters = 256, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(generator)
+    generator = Conv2DTranspose(filters = 256, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init, kernel_regularizer=reg, bias_regularizer=reg)(generator)
     generator = BatchNormalization(momentum = 0.5)(generator)
     generator = LeakyReLU(0.2)(generator)
     
@@ -69,7 +75,7 @@ def get_gen_normal(noise_shape):
     #generator = UpSampling2D(size=(2, 2))(generator)
     #generator = SubPixelUpscaling(scale_factor=2)(generator)
     #generator = Conv2D(filters = 128, kernel_size = (4,4), strides = (1,1), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(generator)
-    generator = Conv2DTranspose(filters = 128, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(generator)
+    generator = Conv2DTranspose(filters = 128, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init, kernel_regularizer=reg, bias_regularizer=reg)(generator)
     generator = BatchNormalization(momentum = 0.5)(generator)
     generator = LeakyReLU(0.2)(generator)
     
@@ -77,11 +83,11 @@ def get_gen_normal(noise_shape):
     #generator = UpSampling2D(size=(2, 2))(generator)
     #generator = SubPixelUpscaling(scale_factor=2)(generator)
     #generator = Conv2D(filters = 64, kernel_size = (4,4), strides = (1,1), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(generator)    
-    generator = Conv2DTranspose(filters = 64, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(generator)
+    generator = Conv2DTranspose(filters = 64, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init, kernel_regularizer=reg, bias_regularizer=reg)(generator)
     generator = BatchNormalization(momentum = 0.5)(generator)
     generator = LeakyReLU(0.2)(generator)
     
-    generator = Conv2D(filters = 64, kernel_size = (3,3), strides = (1,1), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(generator)
+    generator = Conv2D(filters = 64, kernel_size = (3,3), strides = (1,1), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init, kernel_regularizer=reg, bias_regularizer=reg)(generator)
     generator = BatchNormalization(momentum = 0.5)(generator)
     generator = LeakyReLU(0.2)(generator)
     
@@ -89,7 +95,7 @@ def get_gen_normal(noise_shape):
     #generator = UpSampling2D(size=(2, 2))(generator)
     #generator = SubPixelUpscaling(scale_factor=2)(generator)
     #generator = Conv2D(filters = 3, kernel_size = (4,4), strides = (1,1), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(generator)
-    generator = Conv2DTranspose(filters = 3, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(generator)
+    generator = Conv2DTranspose(filters = 3, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init, kernel_regularizer=reg, bias_regularizer=reg)(generator)
     generator = Activation('tanh')(generator)
         
     gen_opt = Adam(lr=0.00015, beta_1=0.5)
@@ -102,6 +108,7 @@ def get_gen_normal(noise_shape):
 #------------------------------------------------------------------------------------------
 
 def get_disc_normal(image_shape=(64,64,3)):
+    reg = l2(0.01)
     image_shape = image_shape
     
     dropout_prob = 0.4
@@ -111,24 +118,24 @@ def get_disc_normal(image_shape=(64,64,3)):
     
     dis_input = Input(shape = image_shape)
     
-    discriminator = Conv2D(filters = 64, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(dis_input)
+    discriminator = Conv2D(filters = 64, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init, kernel_regularizer=reg, bias_regularizer=reg)(dis_input)
     discriminator = LeakyReLU(0.2)(discriminator)
     #discriminator = MaxPooling2D(pool_size=(2, 2))(discriminator)
     
     #discriminator = Dropout(dropout_prob)(discriminator)
-    discriminator = Conv2D(filters = 128, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(discriminator)
+    discriminator = Conv2D(filters = 128, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init, kernel_regularizer=reg, bias_regularizer=reg)(discriminator)
     discriminator = BatchNormalization(momentum = 0.5)(discriminator)
     discriminator = LeakyReLU(0.2)(discriminator)
     #discriminator = MaxPooling2D(pool_size=(2, 2))(discriminator)
     
     #discriminator = Dropout(dropout_prob)(discriminator)
-    discriminator = Conv2D(filters = 256, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(discriminator)
+    discriminator = Conv2D(filters = 256, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init, kernel_regularizer=reg, bias_regularizer=reg)(discriminator)
     discriminator = BatchNormalization(momentum = 0.5)(discriminator)
     discriminator = LeakyReLU(0.2)(discriminator)
     #discriminator = MaxPooling2D(pool_size=(2, 2))(discriminator)
     
     #discriminator = Dropout(dropout_prob)(discriminator)
-    discriminator = Conv2D(filters = 512, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init)(discriminator)
+    discriminator = Conv2D(filters = 512, kernel_size = (4,4), strides = (2,2), padding = "same", data_format = "channels_last", kernel_initializer = kernel_init, kernel_regularizer=reg, bias_regularizer=reg)(discriminator)
     discriminator = BatchNormalization(momentum = 0.5)(discriminator)
     discriminator = LeakyReLU(0.2)(discriminator)
     #discriminator = MaxPooling2D(pool_size=(2, 2))(discriminator)
