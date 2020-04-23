@@ -2,6 +2,34 @@
 
 A DCGAN to generate anime faces using custom dataset in Keras.  
 
+# Installation
+* create a virtual env: 
+```python3 -m venv .venv```
+* activate environment 
+```source .venv/bin/activate```
+* install python package for CPU or GPU with one of the following commands:
+```
+pip3 install -r requirements_cpu.txt
+pip3 install -r requirements_gpu.txt
+```
+* install keras contrib with
+```
+git clone https://www.github.com/keras-team/keras-contrib.git
+cd keras-contrib
+python convert_to_tf_keras.py
+USE_TF_KERAS=1 python setup.py install
+```
+
+# Execution
+* activate environtment 
+```source .venv/bin/activate```
+* set **ANIME_FACE_GAN_DATA_DIR** environment variable to your folder containing 64x64 images
+* set **ANIME_FACE_GAN_NUM_STEPS(( environment variable to a different value if you want more or less steps
+* run with 
+```python3 GAN_Trainingv3.py```
+* once finished deactivate environment with 
+```deactivate```
+
 # Dataset  
 
 The dataset is created by crawling anime database websites using `curl`. The script `anime_dataset_gen.py` crawls and processes the images into 64x64 PNG images with only the faces cropped.  
